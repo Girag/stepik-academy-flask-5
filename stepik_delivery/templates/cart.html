@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block main %}
+  <main class="container">
+    <h1 class="h3 my-4">Корзина</h1>
+
+    {% if session.get("meal_deleted") %}
+    <div class="alert alert-warning" role="alert">Блюдо удалено из корзины</div>
+    {% set tmp = session.__setitem__("meal_deleted", False) %}
+    {% endif %}
+    {% if not session.get("is_auth") %}
+    <div class="alert alert-warning" role="alert">Чтобы сделать заказ – <a href="{{ url_for('login_view') }}">войдите</a> или <a href="{{ url_for('register_view') }}">зарегистрируйтесь</a></div>
+    {% endif %}
+
+    <div class="row mt-5">
+
+
+        <div class="col-4">
+          {% if session.get("is_auth") and session.get("cart") %}
+          <form action="/cart/" method="POST">
+          {{ form.csrf_token() }}
+          <h4 class="">Ваши данные</h4>
+          <div class=" md-4 order-md-1">
+            <div class="mt-3 mb-3">
+              {{ form.name.label }}
+              {% for err in form.name.errors %}
+                <p class="alert alert-danger">{{ err }}</p>
+              {% endfor %}
+              {{ form.name(class="font-weight-bold form-control") }}
+            </div>
+          </div>
+          <div class=" md-4 order-md-1">
+            <div class="mt-3 mb-3">
+              {{ form.address.label }}
+              {% for err in form.address.errors %}
+                <p class="alert alert-danger">{{ err }}</p>
+              {% endfor %}
+              {{ form.address(class="font-weight-bold form-control") }}
+            </div>
+          </div>
+          <div class="md-4 form-label-group">
+            {{ form.mail.label }}
+            {% for err in form.mail.errors %}
+              <p class="alert alert-danger">{{ err }}</p>
+            {% endfor %}
+            {{ form.mail(class="font-weight-bold form-control", autofocus=true) }}
+          </div>
+          <div class=" md-4 order-md-1">
+            <div class="mt-3 mb-3">
+              {{ form.phone.label }}
+              {% for err in form.phone.errors %}
+                <p class="alert alert-danger">{{ err }}</p>
+              {% endfor %}
+              {{ form.phone(class="font-weight-bold form-control") }}
+            </div>
+
+            <input type="hidden" value = "{{ total }}" name="order_summ">
+            <input type="hidden" value="{{ cart.keys() }}" name="order_cart">
+
+            <input type="submit" class=" mt-3 mb-5 btn btn-danger" value="Оформить заказ">
+          </form>
+          {% endif %}
+        </div>
+
+    </div>
+
+
+
+      <div class="col-1"></div>
+      <div class="col-7">
+        {% if not items %}
+        <h4 class="mb-3 col-7 mb-5">Корзина пуста</h4>
+        {% elif (items == 1 or items % 10 == 1) and items != 11 %}
+        <h4 class="mb-3 col-7 mb-5">{{ items }} блюдо в корзине</h4>
+        <table class="table">
+          <tbody>
+            {% for meal_id, amount in cart.items() %}
+            <tr>
+              <th scope="row">{{ meals[meal_id|int].title }}</th>
+              <td></td>
+              <td>{{ amount }}</td>
+              <td>{{ meals[meal_id|int].price|int }}</td>
+              <td><a class="text-danger" href="{{ url_for('delfromcart_view', id=meal_id) }}">Удалить</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <hr>
+        <p class="display-4 my-2 ">{{ total|int }} ₽</p>
+        {% elif (2 <= items <=4 or items % 10 == 2 or items % 10 == 3 or items % 10 == 4) and items not in range(12, 15) %}
+        <h4 class="mb-3 col-7 mb-5">{{ items }} блюда в корзине</h4>
+        <table class="table">
+          <tbody>
+            {% for meal_id, amount in cart.items() %}
+            <tr>
+              <th scope="row">{{ meals[meal_id|int].title }}</th>
+              <td></td>
+              <td>{{ amount }}</td>
+              <td>{{ meals[meal_id|int].price|int }}</td>
+              <td><a class="text-danger" href="{{ url_for('delfromcart_view', id=meal_id) }}">Удалить</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <hr>
+        <p class="display-4 my-2 ">{{ total|int }} ₽</p>
+        {% else %}
+        <h4 class="mb-3 col-7 mb-5">{{ items }} блюд в корзине</h4>
+        <table class="table">
+          <tbody>
+            {% for meal_id, amount in cart.items() %}
+            <tr>
+              <th scope="row">{{ meals[meal_id|int].title }}</th>
+              <td></td>
+              <td>{{ amount }}</td>
+              <td>{{ meals[meal_id|int].price|int }}</td>
+              <td><a class="text-danger" href="{{ url_for('delfromcart_view', id=meal_id) }}">Удалить</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <hr>
+        <p class="display-4 my-2 ">{{ total|int}} ₽</p>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+{% endblock %}

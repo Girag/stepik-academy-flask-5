@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block main %}
+  <main class="container">
+    <section class="row">
+      <div class="col-12 col-lg-8">
+        <h1 class="h3 my-5">Личный кабинет. Заказы</h1>
+        {% for order in orders %}
+        <div class="my-4 card">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-7 col-lg-11">
+                  <span class="h5 font-weight-bold">{{ order.date.strftime('%-d %B %Y года в %H:%M') }}</span>
+                  <span class="h5">на сумму {{ order.total|int }} ₽ в статусе "{{ order.status }}"</span>
+                </div>
+
+              </div>
+            </li>
+            <div class="card-body">
+              <div class="row">
+                {% for meal in meals[order.id] %}
+                <p class="col-4 text-muted">{{ meal[0].title }}</p>
+                <p class="col-2 text-muted"> {{ meal[1] }}</p>
+                <p class="col-6 text-muted"> {{ meal[0].price|int }} </p>
+                {% endfor %}
+              </div>
+            </div>
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+{% endblock %}

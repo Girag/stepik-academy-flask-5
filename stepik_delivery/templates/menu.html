@@ -1,0 +1,20 @@
+    {% for category in categories %}
+    <section>
+      <h3 class="my-4"><a class="text-dark p-0" href="{{ url_for('category_view', id=category.id) }}">{{ category.title }}</a></h3>
+      <div class="row mt-4">
+        {% for meal in meals[category.id] %}
+        <div class="col-12 col-md-4">
+          <div class="card mb-3">
+            <img src="{{ url_for('static', filename='pictures/') }}{{ meal.picture }}" width="300" height="200" class="card-img-top" alt="">
+            <div class="card-body">
+              <h4 class="h5 card-title">{{ meal.title }}</h4>
+              <h6 class="card-subtitle mb-2 text-muted">за {{ meal.price|int }} ₽</h6>
+              <p class="card-text">{{ meal.description }}</p>
+              <a href="{{ url_for('addtocart_view', id=meal.id) }}" class="btn btn-danger">В корзину</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
