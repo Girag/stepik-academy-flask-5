@@ -1,3 +1,3 @@
 import stepik_delivery
 
-stepik_delivery.app.run(debug=True)
+stepik_delivery.app.run()
